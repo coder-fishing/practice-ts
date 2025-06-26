@@ -1,0 +1,49 @@
+@use '../base/typography';
+
+//Fonts
+
+$primary-font: 'Public Sans', sans-serif;
+
+//responsive
+
+$mobileSmall: 15em;
+$mobileSmallMax: 20em;
+$mobileMediumMax: 26.9375em;
+$tabletSmallMax: 48em;
+$tabletMax: 64.0625em;
+
+//Colors
+
+$neutralBlack400: #4A4C56;
+$neutralBlack500: #1D1F2C;
+$neutralGray100: #E0E2E7;
+$neutralGray200: #C2C6CE;
+$neutralGray25:  #F9F9FC;
+$neutralGray300: #A3A9B6;
+$neutralGray400: #858D9D;
+$neutralGray50:  #F0F1F3;
+$neutralGray500: #667085;
+$neutralGray600: #333;
+$neutralBlack300: #777980;
+$neutralWhite: #FFFFFF;
+$primary50: #F4ECFB;
+$primary500: #883DCF;
+$secondaryCyan500:  #2BB2FE;
+$secondaryGreen50: #E9FAF7;
+$secondaryGreen500: #22CAAD;
+$secondaryGreen600:#1A9882;
+$secondaryOrange50: #FFF0EA;
+$secondaryOrange500: #FF7E29;
+$secondaryRed50: #FEECEE;
+$secondaryRed500: #EB3D4D;
+$secondaryRed600: #FF4D4F;
+$secondaryRed60: #FF7875;
+$secondaryYellow50: #F9C80E;
+$main :#E0E2E7;
+
+// Status Colors
+$success100: $secondaryGreen50;
+$success500: $secondaryGreen500;
+$error100: $secondaryRed50;
+$error500: $secondaryRed500;
+

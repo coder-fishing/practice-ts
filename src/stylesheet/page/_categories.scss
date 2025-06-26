@@ -1,0 +1,12 @@
+@use '../abstract/' as *;
+@use '../base/' as *;
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    max-width: 2000px;
+    margin: auto;
+
+    background-color: $main;
+
+}                                                                                                            

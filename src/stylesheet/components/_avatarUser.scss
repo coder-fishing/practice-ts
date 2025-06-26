@@ -1,0 +1,49 @@
+@use '../abstract/' as *;
+@use '../base/' as *;
+
+.main-right__user{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    align-self: stretch;
+
+    &Avatar{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        width: 2.5em;
+        height: 2.5em;
+        
+        &-online{
+            translate: 0.3rem -0.8rem;
+        }
+    }
+    &Name{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 0.125rem;
+
+        &-name{
+            color: $neutralBlack500;
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 1.25rem; 
+            letter-spacing: 0.00438rem;
+        }
+        &-position{
+            color: $neutralBlack400;
+            font-size: 0.75rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 1.125rem; /* 150% */
+            letter-spacing: 0.00375rem;
+        }
+    }
+
+    &:hover{
+        cursor: pointer;
+    }
+}

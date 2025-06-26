@@ -1,0 +1,16 @@
+@use '../abstract/' as *;
+@use '../base/' as *;
+
+.header {
+    display: flex;
+    align-items: center;
+    // gap: 1rem;
+    align-self: stretch;
+
+    &-divider{
+        width: 0rem;
+        height: 2.5rem;
+        padding: 0 1rem;
+          
+    }
+}
