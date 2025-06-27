@@ -74,12 +74,6 @@ export class NavigationController {
       // Reset icon states
       this.updateIconStates(ecommerceMenu, icon, iconnormal, mainIcon, isActive);
     });
-    
-    // Add hover events for the navigation item
-    this.setupNavigationHoverEvents(ecommerceMenu, icon, iconnormal, mainIcon);
-    
-    // Handle hover events for submenu
-    this.setupSubmenuHoverEvents(ecommerceMenu, subMenuContainer, icon, iconnormal, mainIcon);
   }
   
   /**
@@ -114,67 +108,6 @@ export class NavigationController {
       }
     }
   }
-  
-  /**
-   * Sets up hover events for submenu to maintain active state on hover
-   */
-  private setupSubmenuHoverEvents(
-    menuItem: HTMLElement, 
-    submenuContainer: HTMLElement, 
-    hoverIcon: HTMLElement,
-    normalIcon: HTMLElement,
-    mainIcon: HTMLElement | null
-  ): void {
-    // Keep active state when hovering over submenu
-    submenuContainer.addEventListener("mouseenter", () => {
-      menuItem.classList.add("active");
-      submenuContainer.style.display = "block";
-      this.updateIconStates(menuItem, hoverIcon, normalIcon, mainIcon, true);
-    });
-
-    // Hide submenu when mouse leaves, unless already active from click
-    submenuContainer.addEventListener("mouseleave", () => {
-      if (!menuItem.classList.contains("active")) {
-        submenuContainer.style.display = "none";
-        this.updateIconStates(menuItem, hoverIcon, normalIcon, mainIcon, false);
-      }
-    });
-  }
-  
-  /**
-   * Sets up hover events for navigation item to show/hide icon colors
-   */
-  private setupNavigationHoverEvents(
-    menuItem: HTMLElement,
-    hoverIcon: HTMLElement,
-    normalIcon: HTMLElement,
-    mainIcon: HTMLElement | null
-  ): void {
-    // Mouse enter - show hover state
-    menuItem.addEventListener("mouseenter", () => {
-      if (!menuItem.classList.contains("active")) {
-        // Only show hover if not already active
-        hoverIcon.style.opacity = "1";
-        if (mainIcon && mainIcon instanceof HTMLImageElement) {
-          const hoverSrc = mainIcon.getAttribute('data-hover');
-          if (hoverSrc) mainIcon.src = hoverSrc;
-        }
-      }
-    });
-
-    // Mouse leave - hide hover state
-    menuItem.addEventListener("mouseleave", () => {
-      if (!menuItem.classList.contains("active")) {
-        // Only hide hover if not active
-        hoverIcon.style.opacity = "0";
-        if (mainIcon && mainIcon instanceof HTMLImageElement) {
-          const normalSrc = mainIcon.getAttribute('data-normal');
-          if (normalSrc) mainIcon.src = normalSrc;
-        }
-      }
-    });
-  }
-
   /**
    * Sets up global document click handler to close dropdown when clicking elsewhere
    */
@@ -208,4 +141,4 @@ export class NavigationController {
 }
 
 // Export a default instance for easy import
-export default NavigationController.getInstance();
+export default NavigationController;

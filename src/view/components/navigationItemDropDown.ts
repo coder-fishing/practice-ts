@@ -14,13 +14,22 @@ export const navigationItemDropDown = (
   item.id = id;  
 
   // Icon
+  const imgGroup = document.createElement("div");
+  imgGroup.className = "navigation-item__image-wrapper";
+
   const img = document.createElement("img");
-  img.src = icon;
-  img.alt = name;
-  // Add data attributes to track normal and hover states
-  img.setAttribute('data-normal', icon);
-  img.setAttribute('data-hover', iconHover);
-  item.appendChild(img);
+  img.setAttribute('src', icon);
+  img.setAttribute('alt', name);
+  img.className = "navigation-item__image"
+  imgGroup.appendChild(img);
+
+  const imgHover = document.createElement("img");
+  imgHover.className = "navigation-item__image--hover";
+  imgHover.setAttribute('src', iconHover);
+  imgHover.setAttribute('alt', name + " hover");
+  imgGroup.appendChild(imgHover);
+
+  item.appendChild(imgGroup);
 
   // Label
   const span = document.createElement("span");
@@ -59,22 +68,7 @@ export const navigationItemDropDown = (
   
   item.appendChild(dropdownWrapper);
   
-  // Hover effects - only for non-dropdown items or when not managed by NavigationController
-  item.addEventListener("mouseenter", () => {
-    // Only apply hover if not actively managed by dropdown controller
-    if (!item.classList.contains("dropdown-managed")) {
-      img.src = iconHover;
-      dropdownIconHover.style.opacity = "1";
-    }
-  });
-  
-  item.addEventListener("mouseleave", () => {
-    // Only reset hover if not actively managed by dropdown controller and not active
-    if (!item.classList.contains("active") && !item.classList.contains("dropdown-managed")) {
-      img.src = icon;
-      dropdownIconHover.style.opacity = "0";
-    }
-  });
+ 
 
   // Click handler for navigation (if not a dropdown item)
   if (id !== "ecommerceMenu") {
