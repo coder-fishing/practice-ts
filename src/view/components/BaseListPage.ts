@@ -357,7 +357,6 @@ export class BaseListPage<T> {
       </div>
       ${searchSection}
       <div class="product-table-container">
-        <div class="loading">Loading data...</div>
       </div>
       <div class="pagination-container"></div>
     `;
