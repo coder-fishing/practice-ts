@@ -119,7 +119,8 @@ export class ProductController extends BaseController<Product> {
      * Delete a product
      */
     public async deleteProduct(id: number): Promise<void> {
-        return this.productService.deleteProduct(id);
+        await this.productService.deleteProduct(id);
+        await this.loadDataForPageWithUI(this.currentPage || 1);
     }
 
     /**
