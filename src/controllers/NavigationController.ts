@@ -132,10 +132,8 @@ export class NavigationController {
         
         if (hoverIcon && normalIcon) {
           this.updateIconStates(ecommerceMenu, hoverIcon, normalIcon, mainIcon, false);
-        }
-        
-        console.log("Clicked outside - closed submenu and reset icons");
-      }
+        }   
+       }
     });
   }
 }
