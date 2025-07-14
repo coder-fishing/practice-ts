@@ -62,7 +62,7 @@ export class BaseListPage<T> {
             <div class="error-message">
               <h3>Error loading data</h3>
               <p>Unable to load data. Please try again later.</p>
-              <button onclick="window.retryLoadData()" class="retry-button">Retry</button>
+              <button class="retry-button" data-action="retry">Retry</button>
             </div>
           `;
         }
@@ -114,6 +114,9 @@ export class BaseListPage<T> {
         
         // Setup sort event listeners
         this.setupSortEventListeners();
+        
+        // Setup retry button event listener
+        // this.setupRetryEventListener();
       }
     });
   }
@@ -357,6 +360,7 @@ export class BaseListPage<T> {
       </div>
       ${searchSection}
       <div class="product-table-container">
+     
       </div>
       <div class="pagination-container"></div>
     `;
@@ -380,11 +384,20 @@ export class BaseListPage<T> {
 
     // Load initial data after DOM is ready
     setTimeout(() => {
+      // Setup sort event listeners
+      this.setupSortEventListeners();
+      
       // Setup tag filter listeners
       this.setupTagFilterListeners();
       
-      // Load initial data
-      this.updateTableAndPagination(1);
+      // Check if URL has parameters to avoid loading default data
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasUrlParams = urlParams.has('page') || urlParams.has('sortBy') || urlParams.has('sortOrder') || urlParams.has('search');
+      
+      // Only load initial data if no URL parameters exist
+      if (!hasUrlParams) {
+        this.updateTableAndPagination(1);
+      }
     }, 0);
 
     return container;
