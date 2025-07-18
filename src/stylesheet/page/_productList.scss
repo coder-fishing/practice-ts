@@ -135,6 +135,22 @@
         justify-content: space-between;
         align-items: flex-start;
         align-self: stretch;
+        gap: 1rem;
+        
+        // Container for filters (tag and status)
+        .filters-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .tag-filter-container {
+            flex-shrink: 0;
+        }
+        
+        .status-filter-container {
+            flex-shrink: 0;
+        }
         
         &__tag{
             display: flex;
@@ -203,6 +219,7 @@
         border-radius: 0.75rem ;
         box-shadow: 0px 4px 30px 0px rgba(46, 45, 116, 0.05);
         background-color: $neutralWhite;
+        min-width: 100%;
         
         
         
@@ -210,6 +227,7 @@
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
+            
         }
 
         thead {
@@ -288,7 +306,7 @@
 
         // Column widths
         th, td {
-            &:nth-child(1) { width: 35%; } // Category name column
+            &:nth-child(1) { min-width: 35%; width: 35%; } // Category name column
             &:nth-child(2) { width: 15%; } // Sold column
             &:nth-child(3) { width: 15%; } // Stock column
             &:nth-child(4) { width: 20%; } // Added column
@@ -476,8 +494,8 @@
     }
 
     .active {
-        background-color: #7c3aed;
-        color: white;
+        background-color:  $primary500;
+        color: $primary500;
     }
     .dots {
         width: 2rem;
@@ -523,5 +541,159 @@
         }
     } 
 }
+
+// Pagination info styling
+.pagination-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  
+  span {
+    background-color: #f3f4f6;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+  }
+}
+
+// Filter active state styling
+.tag-add-searchbar__tag--item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #f3f4f6;
+  }
+  
+  &.item-active {
+    background-color: #3b82f6;
+    color: white;
     
-   
+    .tag-add-searchbar__tag--item-element {
+      color: white;
+    }
+  }
+}
+
+// Filter status indicator
+.filter-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #dbeafe;
+  border: 1px solid #3b82f6;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #1d4ed8;
+  
+  .filter-badge {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+  }
+  
+  .clear-filter {
+    background: none;
+    border: none;
+    color: #1d4ed8;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.875rem;
+    
+    &:hover {
+      color: #1e40af;
+    }
+  }
+}
+
+// Enhanced pagination info
+.pagination-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  
+  span {
+    background-color: #f3f4f6;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    
+    &.filtered {
+      background-color: #dbeafe;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+    }
+  }
+}
+
+// Loading state for filtered results
+.product-table-container {
+  position: relative;
+  min-height: 200px;
+  
+  &.filtering {
+    &::before {
+      content: 'Filtering results...';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      color: #3b82f6;
+      font-weight: 500;
+    }
+  }
+}
+
+// Loading overlay
+.product-table-container {
+  position: relative;
+  min-height: 200px;
+}
+
+// Error message styling
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+  
+  h3 {
+    color: #ef4444;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    margin-bottom: 1rem;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #2563eb;
+    }
+  }
+}
