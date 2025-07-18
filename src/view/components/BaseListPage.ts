@@ -59,11 +59,9 @@ export class BaseListPage<T> {
         const tableContainer = document.querySelector('.product-table-container');
         if (tableContainer) {
           tableContainer.innerHTML = `
-            <div class="error-message">
-              <h3>Error loading data</h3>
-              <p>Unable to load data. Please try again later.</p>
-              <button class="retry-button" data-action="retry">Retry</button>
-            </div>
+              <div class="no-data-message">
+                <p >No data available.</p>
+              </div>
           `;
         }
       },
@@ -72,6 +70,7 @@ export class BaseListPage<T> {
         const tableContainer = document.querySelector('.product-table-container');
         if (tableContainer) {
           if (result.data.length==0) {
+            this.hideNavigation();
             tableContainer.innerHTML = `
               <div class="no-data-message">
                 <p >No data available.</p>
@@ -80,6 +79,8 @@ export class BaseListPage<T> {
             hideOverlayLoading();
             return;
           }
+          // If data is available, show navigation
+          this.showNavigation();
           tableContainer.innerHTML = this.tableRenderer(
             result.data, 
             result.sortInfo?.sortField || '', 
@@ -223,7 +224,9 @@ export class BaseListPage<T> {
         const tagElement = e.currentTarget as HTMLElement;
         const tagText = tagElement.querySelector('.tag-add-searchbar__tag--item-element')?.textContent || '';
         
-        
+        console.log('🏷️ BaseListPage tag clicked:', tagText);
+        console.log('🏷️ BaseListPage controller type:', this.controller.constructor.name);
+        console.log('🏷️ BaseListPage controller instanceof ProductController:', this.controller instanceof ProductController);
         
         // Remove active class from all tags
         tagItems.forEach(tag => tag.classList.remove('item-active'));
@@ -234,6 +237,7 @@ export class BaseListPage<T> {
         // Handle tag filter for ProductController specifically
         const productController = this.controller as any;
         if (productController instanceof ProductController && productController.handleTagFilterWithPagination) {
+          console.log('🏷️ BaseListPage calling handleTagFilterWithPagination');
           await productController.handleTagFilterWithPagination(tagText, 1);
         } else {
           console.warn('Tag filter only supported for ProductController');
@@ -275,6 +279,20 @@ export class BaseListPage<T> {
     const filterInfo = document.querySelector('.filter-results-info');
     if (filterInfo) {
       filterInfo.remove();
+    }
+  }
+
+  private hideNavigation(): void {
+    const pagin = document.querySelector('.pagination-container') as HTMLElement;
+      if (pagin) {
+        pagin.style.display = 'none'; 
+      }
+  }
+
+  private showNavigation(): void {
+    const pagin = document.querySelector('.pagination-container') as HTMLElement;
+    if (pagin) {
+      pagin.style.display = 'block'; 
     }
   }
 

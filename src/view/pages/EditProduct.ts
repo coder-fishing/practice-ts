@@ -27,7 +27,7 @@ export const EditProduct = (params?: { id: string }): string => {
             </div>   
                 ${groupButton(BUTTON_GROUPS.FORM.PRODUCT)} 
         </div>
-        <div id="product-form-container">Loading product data...</div>
+        <div id="product-form-container"></div>
     </div>
     `;
 
@@ -81,6 +81,9 @@ export const EditProduct = (params?: { id: string }): string => {
             productController.uiHandler.loadCategories();
             productController.uiHandler.setupStatusDropdownItems();
             productController.setupProductForm();
+            
+            // Setup table event listeners for edit/delete buttons
+            productController.setupTableEventListeners();
             
             setTimeout(() => {
                 productController.uiHandler.initializeEditModeImages({

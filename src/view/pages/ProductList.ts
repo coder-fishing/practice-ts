@@ -5,7 +5,6 @@ import { ProductTable } from '~/view/components/table/productTable';
 import ProductController from '~/controllers/ProductController';
 import { BaseListPage } from '~/view/components/BaseListPage';
 import type { Product } from '~/types/product.type';
-// import { TestSearchController } from '~/controllers/TestSearchController';
 
 const productController = ProductController.getInstance();
 // Remove immediate call - will be called after render
@@ -29,10 +28,12 @@ export const ProducList = async (): Promise<HTMLElement> => {
 
   const renderedPage = await baseListPage.render();
   
-  // Setup search after DOM is rendered
+  // Setup search and URL routing after DOM is rendered
   setTimeout(() => {
+    productController.initializeURLRouting();
     productController.initializeSearch();
-  }, 0); 
+    productController.setupTableEventListeners();
+  }, 100); 
 
   return renderedPage;
 };
