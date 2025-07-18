@@ -71,6 +71,15 @@ export class BaseListPage<T> {
         // Update table
         const tableContainer = document.querySelector('.product-table-container');
         if (tableContainer) {
+          if (result.data.length==0) {
+            tableContainer.innerHTML = `
+              <div class="no-data-message">
+                <p >No data available.</p>
+              </div>
+            `;
+            hideOverlayLoading();
+            return;
+          }
           tableContainer.innerHTML = this.tableRenderer(
             result.data, 
             result.sortInfo?.sortField || '', 
