@@ -473,6 +473,7 @@ export class ProductController extends BaseController<Product> {
             
             if (!hasChanges) {
                 createToast('No changes detected. Product was not updated.', 'info');
+                router.navigate('/products');
                 return;
             }
         }

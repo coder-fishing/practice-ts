@@ -416,15 +416,18 @@ export class BaseListPage<T> {
       
       // Setup tag filter listeners
       this.setupTagFilterListeners();
-      
+
+      /* 
+      Check if URL has parameters to avoid loading default data
+      */
       // Check if URL has parameters to avoid loading default data
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasUrlParams = urlParams.has('page') || urlParams.has('sortBy') || urlParams.has('sortOrder') || urlParams.has('search');
+      // const urlParams = new URLSearchParams(window.location.search);
+      // const hasUrlParams = urlParams.has('page') || urlParams.has('sortBy') || urlParams.has('sortOrder') || urlParams.has('search');
       
       // Only load initial data if no URL parameters exist
-      if (!hasUrlParams) {
-        this.updateTableAndPagination(1);
-      }
+      // if (!hasUrlParams) {
+      //   this.updateTableAndPagination(1);
+      // }
     }, 0);
 
     return container;
