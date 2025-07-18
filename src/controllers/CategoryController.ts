@@ -8,6 +8,7 @@ import { router } from "../router/Router";
 import { createToast } from "~/utils/toast";
 import { URLStateManager } from "../utils/URLStateManager";
 import { DropdownEventHandler } from "../utils/DropdownEventHandler";
+import { CategoryFormEventHandler } from "../utils/CategoryFormEventHandler ";
 
 
 export class CategoryController extends BaseController<CategoryType> {
@@ -16,9 +17,12 @@ export class CategoryController extends BaseController<CategoryType> {
     uiHandler: CategoryUIHandler;
     private urlManager: URLStateManager;
     private dropdownHandler: DropdownEventHandler;
+    private formEventHandler: CategoryFormEventHandler;
 
     // To track original category data for change detection
     private originalCategoryData: CategoryType | null = null;
+    // To track current category data for image persistence
+    private currentCategoryData: CategoryType | null = null;
     // To track if save button is already initialized
     private saveButtonInitialized: boolean = false;
 
@@ -26,6 +30,7 @@ export class CategoryController extends BaseController<CategoryType> {
         super();
         this.categoryService = new CategoryService();
         this.uiHandler = new CategoryUIHandler();
+        this.formEventHandler = CategoryFormEventHandler.getInstance();
         this.urlManager = URLStateManager.getInstance();
         this.dropdownHandler = DropdownEventHandler.getInstance();
     }
@@ -167,23 +172,12 @@ export class CategoryController extends BaseController<CategoryType> {
                 setTimeout(() => this.handleSearch(), 100);
             });
         }
-    }
-
-    /** 
+    }    /**
      * Initialize image handling
      */  
     initializeImageHandling() {
-        const elements = {
-            emptyState: document.getElementById('emptyState'),
-            previewState: document.getElementById('previewState'),
-            imageInput: document.getElementById('imageInput') as HTMLInputElement,
-            previewImage: document.getElementById('previewImage') as HTMLImageElement,
-            uploadArea: document.querySelector('.thumbnail__upload-area') as HTMLElement
-        };
-
-        if (elements.emptyState && elements.previewState && elements.imageInput) {
-            this.uiHandler.setupImageHandling(elements);
-        }
+        // Initialize the CategoryFormEventHandler
+        this.formEventHandler.initialize();
     }
 
     /**
@@ -221,6 +215,14 @@ export class CategoryController extends BaseController<CategoryType> {
         });
 
         this.saveButtonInitialized = true;
+    }
+
+    /**
+     * Reset save button initialization state
+     */
+    public resetSaveButtonFlag(): void {
+        this.saveButtonInitialized = false;
+        console.log('🔄 Category save button flag reset');
     }
 
     /**
@@ -282,6 +284,9 @@ export class CategoryController extends BaseController<CategoryType> {
                 const previewImg = document.getElementById('previewImage') as HTMLImageElement;
                 if (previewImg?.src && !previewImg.src.includes('data:')) {
                     categoryData.image = previewImg.src;
+                } else if (this.currentCategoryData?.image) {
+                    // Lấy lại ảnh cũ từ dữ liệu hiện tại nếu không có preview hợp lệ
+                    categoryData.image = this.currentCategoryData.image;
                 }
             }
 
@@ -409,7 +414,6 @@ export class CategoryController extends BaseController<CategoryType> {
     initializeController(): void {
         this.setupTableInteractions();
         this.initializeSearch();
-        
         const saveBtn = document.querySelector('#saveCategoryBtn');
         if (saveBtn) {
             this.setupSaveCategoryButton();
@@ -524,9 +528,10 @@ export class CategoryController extends BaseController<CategoryType> {
                 return;
             }
             
+            // Lưu lại dữ liệu category hiện tại để dùng khi save
+            this.currentCategoryData = category;
             // Populate form with category data
             this.populateFormWithCategoryData(category);
-            
             // Save original data for change tracking
             this.saveOriginalCategoryData(category);
             

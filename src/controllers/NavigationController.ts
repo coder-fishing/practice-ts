@@ -2,7 +2,6 @@
  * NavigationController - Handles all navigation interactions and logic
  * Separates the UI rendering from event handling and business logic
  */
-
 export class NavigationController {
   private static instance: NavigationController;
 
@@ -18,7 +17,7 @@ export class NavigationController {
    * Sets up all event listeners for navigation items
    */
   public setupNavigationListeners(): void {
-    console.log("Setting up navigation listeners");
+    
     
     // Use setTimeout to ensure DOM is fully rendered
     setTimeout(() => {
@@ -69,7 +68,7 @@ export class NavigationController {
       const isActive = ecommerceMenu.classList.toggle("active");
       
       subMenuContainer.style.display = isActive ? "block" : "none";
-      console.log("Toggled submenu:", isActive ? "shown" : "hidden");
+      
       
       // Reset icon states
       this.updateIconStates(ecommerceMenu, icon, iconnormal, mainIcon, isActive);
@@ -80,7 +79,7 @@ export class NavigationController {
    * Updates icon states based on active status
    */
   private updateIconStates(
-    menuItem: HTMLElement, 
+    _menuItem: HTMLElement, 
     hoverIcon: HTMLElement, 
     normalIcon: HTMLElement,
     mainIcon: HTMLElement | null,
@@ -132,10 +131,13 @@ export class NavigationController {
         
         if (hoverIcon && normalIcon) {
           this.updateIconStates(ecommerceMenu, hoverIcon, normalIcon, mainIcon, false);
-        }   
+        }
+        
+        
        }
     });
   }
+ 
 }
 
 // Export a default instance for easy import

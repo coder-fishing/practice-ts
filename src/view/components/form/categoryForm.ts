@@ -18,19 +18,13 @@ export const categoryForm = ({ categoryData, mode}: categoryFormProps): string =
                     </div>  
                     <p class="thumbnail__upload-text">Drag and drop image here, or click add image</p>
                     <input type="file" id="imageInput" class="thumbnail__file-input" accept="image/*" hidden>
-                    <button class="thumbnail__add-btn" type="button" onclick="document.getElementById('imageInput').click();">
+                    <button class="thumbnail__add-btn" type="button" data-action="add-image">
                         <p class="thumbnail__add-btn--text">Add Image</p>
                     </button>
                 </div>
                 <div class="thumbnail__preview" id="previewState" style="display: ${mode === 'edit' && categoryData.image ? 'block' : 'none'}">
                     <img id="previewImage" src="${categoryData.image || ''}" alt="category thumbnail"/>
-                    <div class="thumbnail__preview-remove" 
-                         onclick="
-                            document.getElementById('imageInput').value = '';
-                            document.getElementById('previewImage').src = '';
-                            document.getElementById('emptyState').style.display = 'flex';
-                            document.getElementById('previewState').style.display = 'none';
-                         ">×</div>
+                    <div class="thumbnail__preview-remove" data-action="remove-image">×</div>
                 </div>  
             </div>   
 

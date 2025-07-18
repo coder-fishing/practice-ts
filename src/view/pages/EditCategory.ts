@@ -10,16 +10,18 @@ const categoryController = CategoryController.getInstance();
 export const EditCategory = (params?: { id: string }): string => {
     const categoryId = params?.id;
     
-    // Setup image handling và button event listeners after DOM is ready
+    // Setup all event handlers after DOM is ready
     setTimeout(async () => {
         
-        // Load category data if ID is provided
+        // Reset save button flag for new session
+        categoryController.resetSaveButtonFlag();
+        
+        // Initialize all controller functionality (including all event listeners)
+        categoryController.initializeController();
+        
+        // Load category data if ID is provided (for edit mode)
         if (categoryId) {
-            await categoryController.initializeEditPage(categoryId);
-        } else {
-            // Initialize basic functionality for add mode
-            categoryController.initializeImageHandling();
-            categoryController.setupSaveCategoryButton();
+            await categoryController.loadCategoryForEdit(categoryId);
         }
     }, 100);
 
