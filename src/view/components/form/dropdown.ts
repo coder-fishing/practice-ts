@@ -19,14 +19,19 @@ export const Dropdown = ({ id, label: _label, value, options, placeholder = "Sel
   return `
     <div class="dropdown" id="${id}">
       <div class="dropdown-group">
-        <div class="dropbtn" id="${id}${btn}" data-action="toggle-dropdown" data-target="${id}${cont}">
-          ${value || placeholder}
-        </div>
+        <div class="dropbtn" id="${id}${btn}" onclick="
+          const content = document.getElementById('${id}${cont}');
+          if (content) {
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+          }
+          event.stopPropagation();
+          return false;
+        ">${value || placeholder}</div>
         <img src="${caretDown}" alt="caret-down" class="caret-down"/>
       </div>
-      <div class="dropdown-content" id="${id}${cont}" style="display: none;">
+      <div class="dropdown-content" id="${id}${cont}">
         ${options.map(option => `
-          <div data-value="${option.value}" data-id="${option.value}" data-action="select-option">${option.label}</div>
+          <div data-value="${option.value}" data-id="${option.value}">${option.label}</div>
         `).join('')}
       </div>
     </div>

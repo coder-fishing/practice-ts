@@ -4,7 +4,6 @@ import { CategoryTable } from '~/view/components/table/categoryTable';
 import CategoryController from '~/controllers/CategoryController';
 import { BaseListPage } from '~/view/components/BaseListPage';
 import type { Category } from '~/types/category.type';
-
 const categoryController = CategoryController.getInstance();
 
 export const CategoryList = async (): Promise<HTMLElement> => {
@@ -23,7 +22,8 @@ export const CategoryList = async (): Promise<HTMLElement> => {
   // Initialize URL routing and search functionality after DOM is rendered
   setTimeout(() => {
     categoryController.initializeURLRouting();
-    categoryController.initializeSearch();
+    // categoryController.initializeSearch();
+    categoryController.initializeController();
   }, 100);
 
   return container;
