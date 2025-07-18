@@ -1,0 +1,90 @@
+// src/stylesheet/components/_thumbnailUpload.scss
+@use '../abstract/' as *;
+
+// Enhanced thumbnail upload styles for drag & drop functionality
+.thumbnail {
+  &__upload-area {
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.highlight, &.dragging {
+      border-color: $primary500 !important;
+      background-color: rgba($primary500, 0.05) !important;
+      transform: scale(1.02);
+    }
+
+    &:hover {
+      border-color: $primary500;
+      background-color: rgba($primary500, 0.03);
+    }
+  }
+
+  &__file-input {
+    display: none;
+  }
+
+  &__preview {
+    width: 100%;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    &-remove {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      opacity: 0;
+      border: none;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.7);
+        transform: scale(1.1);
+      }
+    }
+
+    &:hover &-remove {
+      opacity: 1;
+    }
+  }
+}
+
+// Hide utility class
+.hidden {
+  display: none !important;
+}
+
+// Drag state animations
+@keyframes dragPulse {
+  0%, 100% { 
+    transform: scale(1);
+    border-color: $primary500;
+  }
+  50% { 
+    transform: scale(1.02);
+    border-color: $primary500;
+  }
+}
+
+.thumbnail__upload-area.dragging {
+  animation: dragPulse 1s infinite;
+}

@@ -1,0 +1,47 @@
+/* Sortable Header Styles */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-header:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sort-icon {
+  transition: transform 0.3s ease;
+  opacity: 0.6;
+}
+
+.sort-icon.active {
+  opacity: 1;
+  color: #3b82f6;
+}
+
+.sort-icon:hover {
+  opacity: 0.8;
+}
+
+/* Sort states */
+.sort-asc .sort-icon {
+  transform: rotate(180deg);
+}
+
+.sort-desc .sort-icon {
+  transform: rotate(0deg);
+}
+
+/* Table header hover effects */
+.product-table-header__wrapper.sortable-header {
+  border-radius: 4px;
+  padding: 4px;
+  margin: -4px;
+}
+
+.product-table-header__wrapper.sortable-header:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.product-table-header__wrapper.sortable-header:active {
+  background-color: rgba(59, 130, 246, 0.2);
+}
