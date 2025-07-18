@@ -3,7 +3,7 @@ import { BUTTON_GROUPS } from '~/constant';
 import { groupButton } from '~/view/components/groupButton';
 import { BREADCRUMBS } from '~/constant';
 import { ProductController } from '~/controllers/ProductController';
-import { productForm } from '~/view/components/form/prodcutForm';
+import { productForm } from '~/view/components/form/productForm';
 
 const productController = ProductController.getInstance();
 
