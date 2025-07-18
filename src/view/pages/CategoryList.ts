@@ -20,8 +20,9 @@ export const CategoryList = async (): Promise<HTMLElement> => {
 
   const container = await baseListPage.render();
   
-  // Initialize search functionality after DOM is rendered
+  // Initialize URL routing and search functionality after DOM is rendered
   setTimeout(() => {
+    categoryController.initializeURLRouting();
     categoryController.initializeSearch();
   }, 100);
 

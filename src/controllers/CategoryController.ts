@@ -6,12 +6,16 @@ import uploadToCloudinary from "../utils/uploadToCloudinary";
 import { hideOverlayLoading, showOverlayLoading } from '~/view/components/loading';
 import { router } from "../router/Router";
 import { createToast } from "~/utils/toast";
+import { URLStateManager } from "../utils/URLStateManager";
+import { DropdownEventHandler } from "../utils/DropdownEventHandler";
 
 
 export class CategoryController extends BaseController<CategoryType> {
     private static instance: CategoryController;
     private categoryService: CategoryService;
     uiHandler: CategoryUIHandler;
+    private urlManager: URLStateManager;
+    private dropdownHandler: DropdownEventHandler;
 
     // To track original category data for change detection
     private originalCategoryData: CategoryType | null = null;
@@ -22,6 +26,8 @@ export class CategoryController extends BaseController<CategoryType> {
         super();
         this.categoryService = new CategoryService();
         this.uiHandler = new CategoryUIHandler();
+        this.urlManager = URLStateManager.getInstance();
+        this.dropdownHandler = DropdownEventHandler.getInstance();
     }
 
     public static getInstance(): CategoryController {
@@ -91,11 +97,22 @@ export class CategoryController extends BaseController<CategoryType> {
      * Search categories with pagination support
      */
     public async searchCategoriesWithPagination(query: string, page: number = 1): Promise<void> {
+        // Update URL with search parameters
+        this.urlManager.updateState({
+            search: query || undefined,
+            page: page,
+            sortBy: this.sortField || undefined,
+            sortOrder: this.sortOrder || undefined
+        });
+
         const allResults = await this.searchCategories(query, 1, 1000);
         const pageSize = this.itemsPerPage || 6;
         const totalItems = allResults.length;
         const startIndex = (page - 1) * pageSize;
-        const paginatedResults = allResults.slice(startIndex, pageSize);
+        const endIndex = startIndex + pageSize;
+        const paginatedResults = allResults.slice(startIndex, endIndex);
+        
+        console.log(`🔍 Search pagination - Query: "${query}", Page: ${page}, Total: ${totalItems}, Showing: ${paginatedResults.length} items`);
         
         const searchResult = {
             data: paginatedResults,
@@ -405,6 +422,97 @@ export class CategoryController extends BaseController<CategoryType> {
     }
 
     /**
+     * Initialize URL routing for category list
+     */
+    public initializeURLRouting(): void {
+        // Initialize dropdown handler
+        this.dropdownHandler.initialize();
+        
+        // Register sort dropdown if exists
+        this.dropdownHandler.registerDropdown({
+            dropdownId: 'sort-dropdown',
+            paramName: 'sortBy',
+            defaultValue: 'name',
+            callback: (value: string) => {
+                // Update sort order based on sort field
+                const order = this.urlManager.getCurrentState().sortOrder || 'asc';
+                this.setSorting(value, order);
+                this.loadDataForPageWithUI(1);
+            }
+        });
+
+        // Register sort order dropdown if exists
+        this.dropdownHandler.registerDropdown({
+            dropdownId: 'sort-order-dropdown',
+            paramName: 'sortOrder',
+            defaultValue: 'asc',
+            callback: (value: string) => {
+                const sortBy = this.urlManager.getCurrentState().sortBy || 'name';
+                this.setSorting(sortBy, value as 'asc' | 'desc');
+                this.loadDataForPageWithUI(1);
+            }
+        });
+
+        // Initialize dropdowns from current URL
+        this.dropdownHandler.initializeFromURL();
+        
+        // Listen for URL changes
+        this.dropdownHandler.listenForURLChanges();
+        
+        // Load initial data from URL parameters
+        this.loadDataFromURL();
+    }
+
+    /**
+     * Load data based on URL parameters
+     */
+    private loadDataFromURL(): void {
+        const urlState = this.urlManager.getCurrentState();
+        console.log('🔄 CategoryController loading data from URL:', urlState);
+        
+        // Set sorting from URL
+        if (urlState.sortBy) {
+            this.setSorting(urlState.sortBy, urlState.sortOrder || 'asc');
+        }
+        
+        // Set pagination from URL
+        if (urlState.page) {
+            this.currentPage = urlState.page;
+        }
+        
+        // Handle search from URL
+        if (urlState.search) {
+            console.log('🔍 CategoryController loading search from URL:', urlState.search);
+            // Set search input value with a small delay to ensure DOM is ready
+            setTimeout(() => {
+                const searchInputs = document.querySelectorAll<HTMLInputElement>('.search-input, .search-bar_input, input[type="search"]');
+                searchInputs.forEach(input => {
+                    input.value = urlState.search || '';
+                });
+            }, 50);
+            
+            // Perform search
+            this.searchCategoriesWithPagination(urlState.search, this.currentPage);
+        } else {
+            console.log('📄 CategoryController loading regular data, page:', this.currentPage);
+            // Load regular data
+            this.loadDataForPageWithUI(this.currentPage);
+        }
+    }
+    
+    /**
+     * Initialize edit category page
+     */
+    async initializeEditPage(categoryId: string): Promise<void> {
+        // Initialize all basic functionality
+        this.initializeImageHandling();
+        this.setupSaveCategoryButton();
+        
+        // Load category data for edit
+        await this.loadCategoryForEdit(categoryId);
+    }
+
+    /**
      * Load category data and populate form for edit mode
      */
     async loadCategoryForEdit(categoryId: string): Promise<void> {
@@ -466,18 +574,6 @@ export class CategoryController extends BaseController<CategoryType> {
     }
 
     /**
-     * Initialize edit category page
-     */
-    async initializeEditPage(categoryId: string): Promise<void> {
-        // Initialize all basic functionality
-        this.initializeImageHandling();
-        this.setupSaveCategoryButton();
-        
-        // Load category data for edit
-        await this.loadCategoryForEdit(categoryId);
-    }
-
-    /**
      * Save original category data from database
      */
     private saveOriginalCategoryData(categoryData: CategoryType): void {
@@ -535,6 +631,35 @@ export class CategoryController extends BaseController<CategoryType> {
         );
     }
 
+    /**
+     * Override sortAndReload to update URL when sorting
+     */
+    public async sortAndReload(field: string): Promise<void> {
+        this.toggleSort(field);
+        
+        // Update URL with new sort parameters
+        this.urlManager.updateState({
+            sortBy: this.sortField,
+            sortOrder: this.sortOrder,
+            page: 1 // Reset to page 1 when sorting
+        });
+        
+        await this.loadDataForPageWithUI(1);
+    }
 
+    /**
+     * Override loadDataForPageWithUI to update URL when pagination changes
+     */
+    public async loadDataForPageWithUI(page: number): Promise<void> {
+        // Update URL with new page
+        this.urlManager.updateState({
+            page: page,
+            sortBy: this.sortField || undefined,
+            sortOrder: this.sortOrder || undefined
+        });
+
+        // Call parent method
+        await super.loadDataForPageWithUI(page);
+    }
 }
 export default CategoryController;
