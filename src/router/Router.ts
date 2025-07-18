@@ -1,6 +1,6 @@
 export interface Route {
   path: string;
-  component: () => HTMLElement | string;
+  component: (params?: any) => HTMLElement | string | Promise<HTMLElement>;
   title?: string;
 }
 
@@ -19,14 +19,53 @@ export class Router {
     this.routes.set(route.path, route);
   }
 
-  navigate(path: string, pushState: boolean = true): void {
-    const route = this.routes.get(path);
+  // Parse path parameters from route pattern
+  private parseParams(pattern: string, path: string): any {
+    const patternSegments = pattern.split('/');
+    const pathSegments = path.split('/');
+    const params: any = {};
+
+    if (patternSegments.length !== pathSegments.length) {
+      return null;
+    }
+
+    for (let i = 0; i < patternSegments.length; i++) {
+      const patternSegment = patternSegments[i];
+      const pathSegment = pathSegments[i];
+
+      if (patternSegment.startsWith(':')) {
+        // This is a parameter
+        const paramName = patternSegment.slice(1);
+        params[paramName] = pathSegment;
+      } else if (patternSegment !== pathSegment) {
+        // Segments don't match
+        return null;
+      }
+    }
+
+    return params;
+  }
+
+  // Find matching route and extract parameters
+  private findRoute(path: string): { route: Route; params: any } | null {
+    for (const [pattern, route] of this.routes) {
+      const params = this.parseParams(pattern, path);
+      if (params !== null) {
+        return { route, params };
+      }
+    }
+    return null;
+  }
+
+  async navigate(path: string, pushState: boolean = true): Promise<void> {
+    const match = this.findRoute(path);
     
-    if (!route) {
+    if (!match) {
       console.warn(`Route not found: ${path}`);
       return;
     }
 
+    const { route, params } = match;
     this.currentRoute = path;
     
     // Update browser URL if needed
@@ -39,8 +78,45 @@ export class Router {
       document.title = route.title;
     }
 
-    // Render the component
-    this.render(route.component());
+    // Handle async components
+    try {
+      const component = route.component(params);
+      if (component instanceof Promise) {
+        // Show loading state
+        this.renderLoading();
+        const resolvedComponent = await component;
+        this.render(resolvedComponent);
+      } else {
+        this.render(component);
+      }
+    } catch (error) {
+      console.error('Error rendering component:', error);
+      this.renderError();
+    }
+  }
+
+  private renderLoading(): void {
+    const contentElement = document.querySelector('#main-content');
+    if (contentElement) {
+      contentElement.innerHTML = `
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading...</p>
+        </div>
+      `;
+    }
+  }
+
+  private renderError(): void {
+    const contentElement = document.querySelector('#main-content');
+    if (contentElement) {
+      contentElement.innerHTML = `
+        <div class="error-container">
+          <h3>Error</h3>
+          <p>Something went wrong. Please try again.</p>
+        </div>
+      `;
+    }
   }
   private render(component: HTMLElement | string): void {
     const contentElement = document.querySelector('#content');
