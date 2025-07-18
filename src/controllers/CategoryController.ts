@@ -8,7 +8,7 @@ import { router } from "../router/Router";
 import { createToast } from "~/utils/toast";
 import { URLStateManager } from "../utils/URLStateManager";
 import { DropdownEventHandler } from "../utils/DropdownEventHandler";
-import { CategoryFormEventHandler } from "../utils/CategoryFormEventHandler";
+import { CategoryFormEventHandler } from "../utils/CategoryFormEventHandler ";
 
 
 export class CategoryController extends BaseController<CategoryType> {
